@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Chat | Test Charity</title>
+  <meta name="robots" content="noindex">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brand: #1a6b4a; --brand-dark: #144f37; --brand-light: #e8f5ee;
+      --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb; --bg: #f9fafb;
+      --bad: #b91c1c; --bad-bg: #fef2f2;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text); background: var(--bg); line-height: 1.6; }
+    nav { background: #fff; border-bottom: 1px solid var(--border); padding: 0 16px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .logo { font-weight: 700; color: var(--brand); }
+    .hero { background: linear-gradient(135deg, var(--brand-dark), var(--brand)); color: #fff; padding: 40px 16px; text-align: center; }
+    .hero h1 { font-size: clamp(1.5rem, 4vw, 2.4rem); margin-bottom: 8px; }
+    .hero p { opacity: .88; max-width: 560px; margin: 0 auto; }
+    main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 80px; }
+
+    /* Test tools: kept apart from the "website" so it's clear what a charity's page would and wouldn't have. */
+    .lab { background: #fff; border: 1px dashed #9ca3af; border-radius: 10px; padding: 12px; margin-bottom: 24px; font-size: .85rem; }
+    .lab h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 8px; }
+    .lab-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .lab label { color: var(--muted); }
+    .lab textarea, .lab input[type=text] { width: 100%; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 8px; font: .8rem ui-monospace, Menlo, monospace; }
+    .lab button, .lab select { min-height: 36px; padding: 6px 12px; border-radius: 8px; border: 1px solid #d1d5db; background: #fff; font-size: .85rem; cursor: pointer; }
+    .lab button.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .lab .hint { color: var(--muted); font-size: .8rem; }
+
+    .spacer { display: none; background: repeating-linear-gradient(180deg, #fff 0 120px, var(--brand-light) 120px 240px); border: 1px solid var(--border); border-radius: 10px; padding: 16px; color: var(--muted); height: 1600px; margin-bottom: 24px; }
+    body.below-fold .spacer { display: block; }
+
+    .stage { margin: 0 auto; transition: max-width .2s; }
+    .stage-label { font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
+    #embed { background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; min-height: 80px; }
+    #embed iframe { display: block; }
+
+    .log { margin-top: 24px; background: #111827; color: #e5e7eb; border-radius: 10px; padding: 12px; font: .75rem/1.5 ui-monospace, Menlo, monospace; max-height: 320px; overflow: auto; }
+    .log-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; color: #9ca3af; margin-bottom: 6px; }
+    .log .ok { color: #86efac; }
+    .log .bad { color: #fca5a5; font-weight: 700; }
+    .verdict { padding: 6px 10px; border-radius: 8px; margin-bottom: 8px; background: var(--brand-light); color: var(--brand-dark); font-size: .85rem; }
+    .verdict.bad { background: var(--bad-bg); color: var(--bad); }
+    footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 24px 16px; }
+  </style>
+</head>
+<body>
+  <nav><span class="logo">Test Charity</span><span class="hint">Supporter care</span></nav>
+  <section class="hero">
+    <h1>Book a chat with our team</h1>
+    <p>Pick a time that suits you. We'd love to hear how you'd like to get involved.</p>
+  </section>
+
+  <main>
+    <section class="lab" aria-label="Test tools">
+      <h2>Test tools (not part of a real website)</h2>
+      <div id="paste">
+        <label for="code">Iframe code from SupporterHub (Meeting types › Iframe code, or the team page)</label>
+        <textarea id="code" rows="5" placeholder="<iframe ...></iframe><script>...</script>"></textarea>
+        <div class="lab-row" style="margin-top:8px">
+          <input id="tunnel" type="text" placeholder="Tunnel address (optional), e.g. https://abc.trycloudflare.com: replaces localhost:3001">
+        </div>
+        <div class="lab-row"><button class="primary" id="load">Load</button></div>
+      </div>
+      <div class="lab-row" id="controls" hidden>
+        <label for="width">Width</label>
+        <select id="width">
+          <option value="360">Phone 360</option>
+          <option value="390">Phone 390</option>
+          <option value="768">Tablet 768</option>
+          <option value="1100" selected>Desktop column 1100</option>
+          <option value="none">Full width</option>
+        </select>
+        <label><input type="checkbox" id="fold"> Frame further down the page</label>
+        <button id="reload" title="Load the page again, e.g. after switching a meeting type Off">Reload page</button>
+        <button id="clearlog">Clear log</button>
+        <button id="reset">Paste different code</button>
+      </div>
+      <p class="hint">Phone widths here only narrow the frame. For touch, open this page on a phone.</p>
+    </section>
+
+    <div class="spacer">Long section of the charity's page (1600px), so the booking frame starts out of view.</div>
+
+    <div class="stage" id="stage">
+      <div class="stage-label" id="stage-label"></div>
+      <div id="embed"></div>
+    </div>
+
+    <section class="log" aria-label="Messages from the frame">
+      <div class="log-head"><span>Messages the frame sent to this page</span><span id="frame-size"></span></div>
+      <div class="verdict" id="verdict">No messages yet.</div>
+      <div id="log"></div>
+    </section>
+  </main>
+  <footer>Test Charity · a test page for embedded booking pages</footer>
+
+  <script>
+  (function () {
+    var KEY = 'sh_booking_embed_code', FOLD = 'sh_booking_embed_fold';
+    var store = {
+      get: function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } },
+      set: function (v) { try { localStorage.setItem(KEY, v); } catch (e) {} },
+      clear: function () { try { localStorage.removeItem(KEY); } catch (e) {} },
+      fold: function (v) { try { if (v === undefined) return localStorage.getItem(FOLD) === '1'; localStorage.setItem(FOLD, v ? '1' : '0'); } catch (e) { return false; } }
+    };
+    var embed = document.getElementById('embed');
+    var code = null, count = 0, bad = 0;
+
+    // Scripts set with innerHTML don't run: re-create them.
+    function inject(html) {
+      embed.innerHTML = html;
+      embed.querySelectorAll('script').forEach(function (old) {
+        var s = document.createElement('script');
+        if (old.src) s.src = old.src; else s.textContent = old.textContent;
+        old.parentNode.replaceChild(s, old);
+      });
+    }
+
+    function show(html) {
+      code = html;
+      document.getElementById('paste').hidden = true;
+      document.getElementById('controls').hidden = false;
+      inject(html);
+      applyWidth();
+    }
+
+    function applyWidth() {
+      var w = document.getElementById('width').value;
+      var stage = document.getElementById('stage');
+      stage.style.maxWidth = w === 'none' ? 'none' : w + 'px';
+      document.getElementById('stage-label').textContent = 'Frame column: ' + (w === 'none' ? 'full width' : w + 'px');
+    }
+
+    // Booking pages may send only { height } and { action: 'scrollToTop' }. Anything else is flagged, and so is any
+    // text that looks like an address or a token.
+    function judge(data) {
+      if (!data || typeof data !== 'object' || Array.isArray(data)) return 'not an object';
+      var keys = Object.keys(data).sort().join(',');
+      if (keys === 'height' && typeof data.height === 'number') return null;
+      if (keys === 'action' && data.action === 'scrollToTop') return null;
+      return 'unexpected shape: ' + keys;
+    }
+
+    window.addEventListener('message', function (e) {
+      var frame = embed.querySelector('iframe');
+      if (!frame || e.source !== frame.contentWindow) return;
+      count++;
+      var text; try { text = JSON.stringify(e.data); } catch (err) { text = String(e.data); }
+      var problem = judge(e.data) || (/\/|token|booking|http/i.test(text) ? 'holds an address-like value' : null);
+      if (problem) bad++;
+      var line = document.createElement('div');
+      line.className = problem ? 'bad' : 'ok';
+      line.textContent = new Date().toLocaleTimeString() + '  ' + e.origin + '  ' + text + (problem ? '  ⚠ ' + problem : '');
+      var log = document.getElementById('log');
+      log.insertBefore(line, log.firstChild);
+      var verdict = document.getElementById('verdict');
+      verdict.className = 'verdict' + (bad ? ' bad' : '');
+      verdict.textContent = bad ? bad + ' of ' + count + ' messages were not height or scroll-to-top.' : 'All ' + count + ' messages were height or scroll-to-top only.';
+      document.getElementById('frame-size').textContent = 'frame ' + Math.round(frame.getBoundingClientRect().width) + ' × ' + Math.round(frame.getBoundingClientRect().height) + 'px';
+    });
+
+    document.getElementById('load').addEventListener('click', function () {
+      var html = document.getElementById('code').value.trim();
+      if (!html) return;
+      var tunnel = document.getElementById('tunnel').value.trim().replace(/\/+$/, '');
+      if (tunnel) html = html.replace(/https?:\/\/localhost:3001/g, tunnel);
+      store.set(html);
+      show(html);
+    });
+    document.getElementById('width').addEventListener('change', applyWidth);
+    // The iframe code runs once per page, as on a real website: these load the whole page again.
+    document.getElementById('fold').addEventListener('change', function (e) { store.fold(e.target.checked); location.reload(); });
+    document.getElementById('reload').addEventListener('click', function () { location.reload(); });
+    document.getElementById('clearlog').addEventListener('click', function () {
+      document.getElementById('log').innerHTML = ''; count = 0; bad = 0;
+      document.getElementById('verdict').className = 'verdict';
+      document.getElementById('verdict').textContent = 'No messages yet.';
+    });
+    document.getElementById('reset').addEventListener('click', function () {
+      store.clear(); code = null; embed.innerHTML = '';
+      document.getElementById('paste').hidden = false;
+      document.getElementById('controls').hidden = true;
+    });
+
+    var folded = store.fold();
+    document.getElementById('fold').checked = folded;
+    document.body.classList.toggle('below-fold', folded);
+    if (folded) window.addEventListener('load', function () { window.scrollTo(0, 0); });
+    var saved = store.get();
+    if (saved) show(saved);
+  })();
+  </script>
+</body>
+</html>
