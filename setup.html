@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Setup | Wattlegrove Community Network</title>
+  <meta name="description" content="Test site setup.">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <div class="top-strip"><div class="wrap"><span>Test site for embedded booking pages. Not a real organisation.</span><span>Need help now? <a href="tel:0000000000">Call 00 0000 0000</a></span></div></div>
+  <header class="site"><div class="wrap">
+    <a class="brand" href="index.html"><span class="brand-mark">W</span>Wattlegrove Community Network</a>
+    <nav class="main"><a href="index.html">Home</a><a href="volunteer.html">Volunteer</a><a href="book.html">Book a chat</a><a href="contact.html">Contact</a></nav>
+    <a class="donate" href="#">Donate</a>
+    <button class="menu-btn" type="button" aria-label="Menu">Menu</button>
+  </div></header>
+  <div class="band"><div class="wrap"><h1>Test site setup</h1><p>Paste SupporterHub iframe code once; every page uses it.</p></div></div>
+  <section><div class="wrap" style="max-width:820px;font-family:Arial,sans-serif">
+    <p><label for="type"><strong>Meeting type iframe code</strong> (Meeting types › Iframe code). Used on Book a chat and Contact.</label></p>
+    <textarea id="type" rows="6" style="width:100%;font:12px ui-monospace,Menlo,monospace"></textarea>
+    <p><label for="team"><strong>Team page iframe code</strong> (optional; Team meeting types › Team page ⋯). Used on Volunteer.</label></p>
+    <textarea id="team" rows="6" style="width:100%;font:12px ui-monospace,Menlo,monospace"></textarea>
+    <p><label for="tunnel"><strong>Tunnel address</strong> (optional; replaces http://localhost:3001 in the code, e.g. a trycloudflare.com address)</label></p>
+    <input id="tunnel" type="text" style="width:100%;padding:8px">
+    <p><button id="save" class="btn" style="background:var(--brand);color:#fff;border:0">Save</button> <span id="saved"></span></p>
+    <p><a href="book.html">Book a chat</a> · <a href="volunteer.html">Volunteer</a> · <a href="contact.html">Contact</a></p>
+  </div></section>
+  <script>
+    (function () {
+      var ids = { type: 'wcn_type_code', team: 'wcn_team_code', tunnel: 'wcn_tunnel' };
+      Object.keys(ids).forEach(function (id) { try { document.getElementById(id).value = localStorage.getItem(ids[id]) || ''; } catch (e) {} });
+      document.getElementById('save').addEventListener('click', function () {
+        Object.keys(ids).forEach(function (id) { try { localStorage.setItem(ids[id], document.getElementById(id).value.trim()); } catch (e) {} });
+        document.getElementById('saved').textContent = 'Saved.';
+      });
+    })();
+  </script>
+
+  <footer class="site"><div class="wrap">
+    <div class="cols">
+      <div><strong>Wattlegrove Community Network</strong><br>12 Example Street, Wattlegrove NSW 0000<br>Office hours: Monday to Friday, 9am to 5pm<br>A fictional organisation for testing.</div>
+      <div><strong>Get involved</strong><br><a href="volunteer.html">Volunteer</a><br><a href="book.html">Book a chat</a><br><a href="#">Donate</a></div>
+      <div><strong>About</strong><br><a href="contact.html">Contact</a><br><a href="#">Privacy</a><br><a href="#">Accessibility</a></div>
+    </div>
+    <p class="acknowledgement">We acknowledge the Traditional Custodians of the lands on which we work, and pay our respects to Elders past and present.</p>
+  </div></footer>
+  <script src="site.js"></script>
+</body>
+</html>
