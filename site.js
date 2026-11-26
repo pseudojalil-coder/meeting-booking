@@ -1,4 +1,4 @@
-// Wattlegrove Community Network (FICTIONAL test site): puts the pasted SupporterHub iframe code into each page's booking slot,
+// Couch Potato Rehabilitation Society (FICTIONAL test site): puts the pasted SupporterHub iframe code into each page's booking slot,
 // once per page load (as a real website does), and logs what the frame tells this page.
 (function () {
   var KEYS = { type: 'wcn_type_code', team: 'wcn_team_code', tunnel: 'wcn_tunnel' };
@@ -29,6 +29,18 @@
     if (code) inject(slot, swapTunnel(code));
     else slot.innerHTML = '<div class="booking-missing">The booking form appears here. <a href="setup.html">Set up the test site</a> first.</div>';
   }
+
+  // Test bar at the very bottom of every page: change the code, reset it (second click confirms), the log.
+  var bar = document.createElement('div'); bar.className = 'tt-bar';
+  bar.innerHTML = '<span>Test site</span><a href="setup.html">Change iframe code</a><button type="button" class="tt-reset">Reset</button>';
+  document.body.appendChild(bar);
+  var reset = bar.querySelector('.tt-reset'), armed = null;
+  reset.addEventListener('click', function () {
+    if (!armed) { reset.textContent = 'Click again to reset'; armed = setTimeout(function () { reset.textContent = 'Reset'; armed = null; }, 4000); return; }
+    clearTimeout(armed); armed = null;
+    Object.keys(KEYS).forEach(function (k) { try { localStorage.removeItem(KEYS[k]); } catch (e) {} });
+    location.reload();
+  });
 
   // Test tools: a corner button opening a log of the frame's messages.
   var toggle = document.createElement('button'); toggle.className = 'tt-toggle'; toggle.textContent = 'Test log';

@@ -1,4 +1,4 @@
-/* Wattlegrove Community Network: a FICTIONAL charity website for testing embedded booking pages. */
+/* Couch Potato Rehabilitation Society: a FICTIONAL charity website for testing embedded booking pages. */
 *, *::before, *::after { box-sizing: border-box; }
 :root {
   --ink: #1f2a37; --muted: #5b6676; --line: #e3e7ee; --bg: #fbfaf7;
@@ -83,3 +83,7 @@ footer.site .cols { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 24px
 .tt-panel.open { display: block; }
 .tt-panel .ok { color: #86efac; } .tt-panel .bad { color: #fca5a5; font-weight: 700; }
 .tt-panel a { color: #93c5fd; }
+
+/* The test bar under the footer (test site only). */
+.tt-bar { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; justify-content: center; padding: 12px 20px 64px; background: #111827; color: #9ca3af; font: 13px Arial, sans-serif; }
+.tt-bar a, .tt-bar button { color: #fff; background: none; border: 0; padding: 0; font: inherit; text-decoration: underline; cursor: pointer; }
